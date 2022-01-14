@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QRMeteo.MainPage">
+
+  
+    <StackLayout
+        BackgroundColor="Gray">
+        
+        <Frame BackgroundColor="DeepSkyBlue"  Padding="24" CornerRadius="0" >
+            <Label Text="Инветаризация QR" FontSize="25"
+                   HorizontalOptions="Center">
+            </Label>
+        </Frame>
+        <Button
+                 x:Name="FastScanBtn"
+                 Text="Сканировать"
+                 BackgroundColor="DeepSkyBlue" 
+                 HorizontalOptions="Center"
+                 Clicked="FastScanBtn_Clicked">
+            
+        </Button>
+                  
+        <Button
+                 x:Name="DBButton"
+                 Text="База сканирований"
+                 BackgroundColor="DeepSkyBlue" 
+                 HorizontalOptions="Center"
+                 Clicked="DBBtn_Clicked">
+            
+        </Button>
+        <Button
+                Text="Настройки"
+                BackgroundColor="DeepSkyBlue"
+                HorizontalOptions="Center">
+        </Button>
+        <Label x:Name="ScanResultEntry" Text="Результат сканирования" Margin="10" TextColor="White" />
+        <Label x:Name="EnternetStatusLabel" Text="Нет полкючения к сети" Margin="10" VerticalOptions="Center" HorizontalOptions="Center" TextColor="White" />
+
+
+
+
+    </StackLayout>
+
+</ContentPage>
