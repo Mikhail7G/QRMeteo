@@ -20,9 +20,14 @@ namespace QRMeteo
 
     public partial class MainPage : ContentPage
     {
+
+        private string targetHttpPosString;//ссылка полученая из QR кода
+        private char[] specialSplitSymbol = new char[] { '|'};//Символ разделения стоки, входная строка точно делится символом | !!!!!!!
+
         public MainPage()
         {
             InitializeComponent();
+            SetTapGesture();
         }
 
         protected override void OnAppearing()
@@ -30,16 +35,59 @@ namespace QRMeteo
             TestInternetConnection();
         }
 
-        private async void FastScanBtn_Clicked(object sender, EventArgs e)
-        {
+        private void SetTapGesture()
+        {//устанваливаем двойное нажатие по метки для открытия ссылки на обьект из гугл таблицы
+            TapGestureRecognizer Tapper = new TapGestureRecognizer
+            {
+                NumberOfTapsRequired = 2//количество нажатий
+            };
 
+            Tapper.Tapped += (s, e) =>
+              {
+                  //Open URL
+                  OpenULRByTap();
+              };
+            ScanResultEntry.GestureRecognizers.Add(Tapper);//Привязываем таппер к тексту с резульатом скана
+        }
+
+        private async void OpenULRByTap()
+        {//пытаемся открыть ссылку, полученую в QR коде
             try
             {
-                var scanner = DependencyService.Get<IQrScanningService>();
+                if (targetHttpPosString.Length > 0)
+                {
+                    string url = HttpUtility.UrlDecode(targetHttpPosString);//конвертим в url
+                    // Так как ссылаемся на ячейки из гугл таблиц необходимо наличие программы Google Табицы и надичие доступа к таблице
+                    await Browser.OpenAsync(new Uri(targetHttpPosString), BrowserLaunchMode.SystemPreferred);
+                }
+            }
+            catch(Exception ex)
+            {
+
+            }  
+        }
+
+        private  void FastScanBtn_Clicked(object sender, EventArgs e)
+        {
+            //кнопка быстрого сканирования с записью в гугл таблицу результата
+            StartQRScan();
+        }
+        private void DBBtn_Clicked(object sender, EventArgs e)
+        {
+            //кнопка открытия локальной базы данных записей
+        }
+
+        private async void StartQRScan()
+        {
+            //запускаем поиск QR кода на платформе android
+            try
+            {
+                var scanner = DependencyService.Get<IQrScanningService>();//andriod
                 var result = await scanner.ScanAsync();
                 if (result != null)
                 {
                     ScanResultEntry.Text = result;
+                    SplitResultString(result);
                     await GetReqAsync(result);
                 }
             }
@@ -48,14 +96,12 @@ namespace QRMeteo
 
                 throw;
             }
-        }
-        private void DBBtn_Clicked(object sender, EventArgs e)
-        {
-           
+
         }
 
         private  async Task PostReqAsync(string sendingData)
         {
+            //пост запрос для google API, пока не используется 
             WebRequest request = WebRequest.Create("https://script.google.com/macros/s/AKfycbzCD-6i508skk0U2hl1p7tZP1lQQ7RPSlt7vaKHgRSV_ZIM8VRJMctBethmJ0evkz6c/exec");
             request.Method = "POST";
 
@@ -82,14 +128,15 @@ namespace QRMeteo
 
         private  async Task GetReqAsync(string sendingData)
         {
+            //работает стабильно, протестировано с google API
             var currentConnect = Connectivity.NetworkAccess;
             if (currentConnect == NetworkAccess.None)
             {
-               
+                EnternetStatusLabel.Text = "Нет подключения к сети, запись в локальную базу!";
             }
             else if (currentConnect == NetworkAccess.Internet)
             {
-
+                //Используется GoogleAppsScript для внесения данных в таблицу, пока хватает этого
                 string googleAPI = "https://script.google.com/macros/s/AKfycbzCD-6i508skk0U2hl1p7tZP1lQQ7RPSlt7vaKHgRSV_ZIM8VRJMctBethmJ0evkz6c/exec?sdata=";
                 string scanResult = HttpUtility.UrlEncode(sendingData);
                 string result = string.Format("{0}{1}", googleAPI, scanResult);
@@ -97,6 +144,8 @@ namespace QRMeteo
                 WebResponse response = await request.GetResponseAsync();
 
                 response.Close();
+
+                EnternetStatusLabel.Text = "Отправлено в таблицу!\n Двойное нажатие по тексту откроет онлайн таблицу";
             }
         }
 
@@ -111,7 +160,13 @@ namespace QRMeteo
             {
                 EnternetStatusLabel.Text = "Нет подключения к сети!";
             }
+        }
 
+        private void SplitResultString(string str)
+        {
+            //Разбитие текста на составляющие 1-URL в таблице 2-... Пока так
+            string[] splitedStrings = str.Split(specialSplitSymbol, StringSplitOptions.RemoveEmptyEntries);
+            targetHttpPosString = splitedStrings[0];
         }
     }
 }
