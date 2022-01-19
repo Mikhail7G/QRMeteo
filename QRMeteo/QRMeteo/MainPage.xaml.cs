@@ -12,17 +12,14 @@ using Xamarin.Essentials;
 using QRMeteo.Service;
 
 
-
-
 namespace QRMeteo
 {
-
-
     public partial class MainPage : ContentPage
     {
 
         private string targetHttpPosString;//ссылка полученая из QR кода
-        private char[] specialSplitSymbol = new char[] { '|'};//Символ разделения стоки, входная строка точно делится символом | !!!!!!!
+        private readonly char[] specialSplitSymbol = new char[] { '|'};//Символ разделения стоки, входная строка точно делится символом | !!!!!!!
+        private string googleScript = "https://script.google.com/macros/s/AKfycbz72RABZJTnMsxxODSvau9Ab867uxawrdVZ69kjXF5t1lsudlytD6WJh-QjeJtjGrN2qA/exec";
 
         public MainPage()
         {
@@ -102,7 +99,7 @@ namespace QRMeteo
         private  async Task PostReqAsync(string sendingData)
         {
             //пост запрос для google API, пока не используется 
-            WebRequest request = WebRequest.Create("https://script.google.com/macros/s/AKfycbzCD-6i508skk0U2hl1p7tZP1lQQ7RPSlt7vaKHgRSV_ZIM8VRJMctBethmJ0evkz6c/exec");
+            WebRequest request = WebRequest.Create(googleScript);
             request.Method = "POST";
 
             string scanResult = HttpUtility.UrlEncode(sendingData);
@@ -116,6 +113,7 @@ namespace QRMeteo
             }
 
             WebResponse response = await request.GetResponseAsync();
+
             using (Stream stream = response.GetResponseStream())
             {
                 using (StreamReader reader = new StreamReader(stream))
@@ -137,7 +135,9 @@ namespace QRMeteo
             else if (currentConnect == NetworkAccess.Internet)
             {
                 //Используется GoogleAppsScript для внесения данных в таблицу, пока хватает этого
-                string googleAPI = "https://script.google.com/macros/s/AKfycbzCD-6i508skk0U2hl1p7tZP1lQQ7RPSlt7vaKHgRSV_ZIM8VRJMctBethmJ0evkz6c/exec?sdata=";
+
+                string googleAPI = googleScript;
+                googleAPI = googleScript + "?sdata=";
                 string scanResult = HttpUtility.UrlEncode(sendingData);
                 string result = string.Format("{0}{1}", googleAPI, scanResult);
                 WebRequest request = WebRequest.Create(result);
@@ -165,7 +165,7 @@ namespace QRMeteo
         private void SplitResultString(string str)
         {
             //Разбитие текста на составляющие 1-URL в таблице 2-... Пока так
-            string[] splitedStrings = str.Split(specialSplitSymbol, StringSplitOptions.RemoveEmptyEntries);
+            string[] splitedStrings = str.Split(specialSplitSymbol);
             targetHttpPosString = splitedStrings[0];
         }
     }
