@@ -21,8 +21,21 @@ namespace QRMeteo
         private readonly char[] specialSplitSymbol = new char[] { '|'};//Символ разделения стоки, входная строка точно делится символом | !!!!!!!
         private string googleScript = "https://script.google.com/macros/s/AKfycbz72RABZJTnMsxxODSvau9Ab867uxawrdVZ69kjXF5t1lsudlytD6WJh-QjeJtjGrN2qA/exec";
 
+        private struct ResievedData
+        {
+            public string targetHttpPosString;//ссылка на бд в гугл таблице 
+            public string posInDBList;        //позиция в бд для ручного поиска
+            public string name;               //название объекта       
+            public string inventoryNumber;    //инвентарный номер
+            public string locationItem;       //местонахождение объекта
+        };
+
+         private ResievedData resivedData;
+
         public MainPage()
         {
+            resivedData = new ResievedData();
+
             InitializeComponent();
             SetTapGesture();
         }
@@ -81,9 +94,9 @@ namespace QRMeteo
             {
                 var scanner = DependencyService.Get<IQrScanningService>();//andriod
                 var result = await scanner.ScanAsync();
-                if (result != null)
+                if (result != null) 
                 {
-                    ScanResultEntry.Text = result;
+                    //ScanResultEntry.Text = result;
                     SplitResultString(result);
                     await GetReqAsync(result);
                 }
@@ -93,7 +106,6 @@ namespace QRMeteo
 
                 throw;
             }
-
         }
 
         private  async Task PostReqAsync(string sendingData)
@@ -167,6 +179,19 @@ namespace QRMeteo
             //Разбитие текста на составляющие 1-URL в таблице 2-... Пока так
             string[] splitedStrings = str.Split(specialSplitSymbol);
             targetHttpPosString = splitedStrings[0];
+
+            resivedData.targetHttpPosString = splitedStrings[0];
+            resivedData.posInDBList = splitedStrings[1];
+            resivedData.name = splitedStrings[2];
+            resivedData.inventoryNumber = splitedStrings[3];
+            resivedData.locationItem = splitedStrings[4];
+
+            PrintReqData();
+        }
+
+        private void PrintReqData()
+        {
+            ScanResultEntry.Text = String.Format("Ведомость №: {0} \n Название: {1} \n Инв номер: {2} \n Находится: {3}", resivedData.posInDBList,resivedData.name,resivedData.inventoryNumber,resivedData.locationItem);
         }
     }
 }
