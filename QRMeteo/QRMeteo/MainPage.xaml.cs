@@ -18,17 +18,10 @@ namespace QRMeteo
     {
 
         private string targetHttpPosString;//ссылка полученая из QR кода
-        private readonly char[] specialSplitSymbol = new char[] { '|'};//Символ разделения стоки, входная строка точно делится символом | !!!!!!!
-        private string googleScript = "https://script.google.com/macros/s/AKfycbz72RABZJTnMsxxODSvau9Ab867uxawrdVZ69kjXF5t1lsudlytD6WJh-QjeJtjGrN2qA/exec";
+        private readonly char[] specialSplitSymbol = new char[] { '|'};//Символ разделения стоки, входная строка точно делится символом < | > 
+        private readonly string googleScript = "https://script.google.com/macros/s/AKfycbz72RABZJTnMsxxODSvau9Ab867uxawrdVZ69kjXF5t1lsudlytD6WJh-QjeJtjGrN2qA/exec";
 
-        private struct ResievedData
-        {
-            public string targetHttpPosString;//ссылка на бд в гугл таблице 
-            public string posInDBList;        //позиция в бд для ручного поиска
-            public string name;               //название объекта       
-            public string inventoryNumber;    //инвентарный номер
-            public string locationItem;       //местонахождение объекта
-        };
+        private string badFormatString = null;//при получении неформатной строки
 
          private ResievedData resivedData;
 
@@ -104,7 +97,6 @@ namespace QRMeteo
             catch (Exception ex)
             {
 
-                throw;
             }
         }
 
@@ -142,7 +134,7 @@ namespace QRMeteo
             var currentConnect = Connectivity.NetworkAccess;
             if (currentConnect == NetworkAccess.None)
             {
-                EnternetStatusLabel.Text = "Нет подключения к сети, запись в локальную базу!";
+                InternetStatusLabel.Text = "Нет подключения к сети, запись в локальную базу!";
             }
             else if (currentConnect == NetworkAccess.Internet)
             {
@@ -157,7 +149,7 @@ namespace QRMeteo
 
                 response.Close();
 
-                EnternetStatusLabel.Text = "Отправлено в таблицу!\n Двойное нажатие по тексту откроет онлайн таблицу";
+                InternetStatusLabel.Text = "Отправлено в таблицу!\n Двойное нажатие по тексту откроет онлайн таблицу";
             }
         }
 
@@ -166,11 +158,11 @@ namespace QRMeteo
             var currentConnect = Connectivity.NetworkAccess;
             if (currentConnect == NetworkAccess.Internet)
             {
-                EnternetStatusLabel.Text = "Подключение к сети!";
+                InternetStatusLabel.Text = "Подключение к сети!";
             }
             else if (currentConnect == NetworkAccess.None)
             {
-                EnternetStatusLabel.Text = "Нет подключения к сети!";
+                InternetStatusLabel.Text = "Нет подключения к сети!";
             }
         }
 
@@ -180,18 +172,30 @@ namespace QRMeteo
             string[] splitedStrings = str.Split(specialSplitSymbol);
             targetHttpPosString = splitedStrings[0];
 
-            resivedData.targetHttpPosString = splitedStrings[0];
-            resivedData.posInDBList = splitedStrings[1];
-            resivedData.name = splitedStrings[2];
-            resivedData.inventoryNumber = splitedStrings[3];
-            resivedData.locationItem = splitedStrings[4];
-
-            PrintReqData();
+            if (splitedStrings.Length > 4)
+            {
+                resivedData.targetHttpPosString = splitedStrings[0];
+                resivedData.posInDBList = splitedStrings[1];
+                resivedData.name = splitedStrings[2];
+                resivedData.inventoryNumber = splitedStrings[3];
+                resivedData.locationItem = splitedStrings[4];
+                PrintReqData();
+            }
+            else
+            {
+                badFormatString = str;
+                PrintBadFormat();
+            }
         }
 
         private void PrintReqData()
         {
             ScanResultEntry.Text = String.Format("Ведомость №: {0} \n Название: {1} \n Инв номер: {2} \n Находится: {3}", resivedData.posInDBList,resivedData.name,resivedData.inventoryNumber,resivedData.locationItem);
+        }
+
+        private void PrintBadFormat()
+        {
+            ScanResultEntry.Text = String.Format("Неверный формат входной строки! \n {0}", badFormatString);
         }
     }
 }
