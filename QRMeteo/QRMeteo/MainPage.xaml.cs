@@ -9,7 +9,10 @@ using System.Web;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Essentials;
+using DocumentFormat.OpenXml;
 using QRMeteo.Service;
+using QRMeteo.ViewModels;
+using QRMeteo.DBExcel;
 
 
 namespace QRMeteo
@@ -23,11 +26,16 @@ namespace QRMeteo
 
         private string badFormatString = null;//при получении неформатной строки
 
-         private ResievedData resivedData;
+        private ResievedData resivedData;
+        private IntventoryObject inventoryScanResult;
+        ExportingViewModel Model = new ExportingViewModel();
 
         public MainPage()
         {
             resivedData = new ResievedData();
+            inventoryScanResult = new IntventoryObject();
+
+            BindingContext = Model;
 
             InitializeComponent();
             SetTapGesture();
@@ -75,9 +83,15 @@ namespace QRMeteo
             //кнопка быстрого сканирования с записью в гугл таблицу результата
             StartQRScan();
         }
-        private void DBBtn_Clicked(object sender, EventArgs e)
+        private async void DBBtn_Clicked(object sender, EventArgs e)
         {
-            //кнопка открытия локальной базы данных записей
+            LocalDBPage page = new LocalDBPage();
+            await Navigation.PushAsync(page);
+            page.SetViewModel(Model);
+        }
+        private async void ExcelDB_Clicked(object sendr,EventArgs e)
+        {
+           await Model.OpenFile();
         }
 
         private async void StartQRScan()
@@ -91,7 +105,7 @@ namespace QRMeteo
                 {
                     //ScanResultEntry.Text = result;
                     SplitResultString(result);
-                    await GetReqAsync(result);
+                    //await GetReqAsync(result);
                 }
             }
             catch (Exception ex)
@@ -99,7 +113,7 @@ namespace QRMeteo
 
             }
         }
-
+        [Obsolete]
         private  async Task PostReqAsync(string sendingData)
         {
             //пост запрос для google API, пока не используется 
@@ -127,7 +141,7 @@ namespace QRMeteo
             }
             response.Close();
         }
-
+        [Obsolete]
         private  async Task GetReqAsync(string sendingData)
         {
             //работает стабильно, протестировано с google API
@@ -174,12 +188,18 @@ namespace QRMeteo
 
             if (splitedStrings.Length > 4)
             {
-                resivedData.targetHttpPosString = splitedStrings[0];
-                resivedData.posInDBList = splitedStrings[1];
-                resivedData.name = splitedStrings[2];
-                resivedData.inventoryNumber = splitedStrings[3];
-                resivedData.locationItem = splitedStrings[4];
+                
+                inventoryScanResult.TargetHttpPosString = splitedStrings[0];
+                inventoryScanResult.PosInDBList = splitedStrings[1];
+                inventoryScanResult.Name = splitedStrings[2];
+                inventoryScanResult.InventoryNumber = splitedStrings[3];
+                inventoryScanResult.LocationItem = splitedStrings[4];
                 PrintReqData();
+                Model.AddItemToCollection(new IntventoryObject() {
+                    Name = inventoryScanResult.Name,
+                    InventoryNumber = inventoryScanResult.InventoryNumber,
+                    LocationItem = inventoryScanResult.LocationItem
+                });
             }
             else
             {
@@ -190,7 +210,7 @@ namespace QRMeteo
 
         private void PrintReqData()
         {
-            ScanResultEntry.Text = String.Format("Ведомость №: {0} \n Название: {1} \n Инв номер: {2} \n Находится: {3}", resivedData.posInDBList,resivedData.name,resivedData.inventoryNumber,resivedData.locationItem);
+            ScanResultEntry.Text = String.Format("Ведомость №: {0} \n Название: {1} \n Инв номер: {2} \n Находится: {3}", inventoryScanResult.PosInDBList, inventoryScanResult.Name, inventoryScanResult.InventoryNumber, inventoryScanResult.LocationItem);
         }
 
         private void PrintBadFormat()

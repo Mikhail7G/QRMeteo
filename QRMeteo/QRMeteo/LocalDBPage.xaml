@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QRMeteo.LocalDBPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style
+                x:Key="buttonStlyle"
+                TargetType="Button">
+                <Setter Property="BackgroundColor" Value="DeepSkyBlue"/>
+                <Setter Property="FontSize" Value="Small"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout
+         BackgroundColor="Gray"
+        Orientation="Vertical">
+        <Frame BackgroundColor="DimGray"  Padding="5" CornerRadius="0" >
+        </Frame>
+        <Button
+                 x:Name="BackBtn"
+                 Text="Назад"
+                 Style="{StaticResource buttonStlyle}"
+                 HorizontalOptions="Center"
+                 Clicked="BackBtn_Clicked">
+        </Button>
+        <Button
+                 x:Name="WriteToExelBtn"
+                 Text="Запись в Excel"
+                 Style="{StaticResource buttonStlyle}"
+                 Command="{Binding ExportToExcelCommand}"
+                 HorizontalOptions="Center"
+                 Clicked="WriteToExelBtn_Clicked">
+        </Button>
+        <Button
+                 x:Name="DeleteExelBtn"
+                 Text="Удалить файл!"
+                 Style="{StaticResource buttonStlyle}"
+                 HorizontalOptions="Center"
+                 Clicked="DeleteExelBtn_Clicked">
+        </Button>
+        <Button
+                 x:Name="DeleteLocalBtn"
+                 Text="Очистить лок. базу"
+                 Style="{StaticResource buttonStlyle}"
+                 HorizontalOptions="Center">
+        </Button>
+
+        <Label x:Name="ResultEntry" Text="" Margin="10" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center" />
+
+    </StackLayout>
+
+</ContentPage>
