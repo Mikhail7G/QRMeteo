@@ -43,6 +43,8 @@
                 HorizontalOptions="Center"
                  Clicked="ExcelDB_Clicked">
         </Button>
+
+        <Entry x:Name="ScanLocationdEntry"  Placeholder = "Где ищем" TextColor="White"/>
         <Label x:Name="ScanResultEntry" Text="Результат сканирования" Margin="10" TextColor="White" />
         <Label x:Name="InternetStatusLabel" Text="Нет полкючения к сети" Margin="10" VerticalOptions="Center" HorizontalOptions="Center" TextColor="White" />
 

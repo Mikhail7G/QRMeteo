@@ -195,10 +195,12 @@ namespace QRMeteo
                 inventoryScanResult.InventoryNumber = splitedStrings[3];
                 inventoryScanResult.LocationItem = splitedStrings[4];
                 PrintReqData();
+
                 Model.AddItemToCollection(new IntventoryObject() {
                     Name = inventoryScanResult.Name,
                     InventoryNumber = inventoryScanResult.InventoryNumber,
-                    LocationItem = inventoryScanResult.LocationItem
+                    LocationItem = inventoryScanResult.LocationItem,
+                    TargetHttpPosString = inventoryScanResult.TargetHttpPosString
                 });
             }
             else

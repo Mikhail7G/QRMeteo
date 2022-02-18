@@ -13,5 +13,6 @@ namespace QRMeteo.DBExcel
         public string Name { set; get; }               //название объекта       
         public string InventoryNumber { set; get; }    //инвентарный номер
         public string LocationItem { set; get; }       //местонахождение объекта
+        public string Comments { set; get; }           //комментарии к объекту
     }
 }

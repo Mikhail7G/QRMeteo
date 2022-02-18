@@ -18,35 +18,65 @@
         Orientation="Vertical">
         <Frame BackgroundColor="DimGray"  Padding="5" CornerRadius="0" >
         </Frame>
-        <Button
+
+        <ListView x:Name="inventoryList"
+              HasUnevenRows="True"
+              ItemsSource="{Binding Model.inventory}"
+              ItemTapped="OnItemTappedAsync">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.View>
+                            <StackLayout>
+                                <Label Text="{Binding Name}" FontSize="15" TextColor="White" />
+                                <Label Text="{Binding InventoryNumber}" TextColor="Wheat" />
+                                <Label Text="{Binding LocationItem}" TextColor="Aquamarine" />
+                            </StackLayout>
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" >
+            <StackLayout Orientation="Vertical" HorizontalOptions="Center" >
+                <Button
                  x:Name="BackBtn"
                  Text="Назад"
                  Style="{StaticResource buttonStlyle}"
                  HorizontalOptions="Center"
-                 Clicked="BackBtn_Clicked">
+                 Clicked="BackBtn_Clicked"
+                 WidthRequest="130"
+                 HeightRequest="55">
         </Button>
-        <Button
+                <Button
                  x:Name="WriteToExelBtn"
                  Text="Запись в Excel"
                  Style="{StaticResource buttonStlyle}"
                  Command="{Binding ExportToExcelCommand}"
                  HorizontalOptions="Center"
-                 Clicked="WriteToExelBtn_Clicked">
-        </Button>
-        <Button
+                 Clicked="WriteToExelBtn_Clicked"
+                 WidthRequest="130">
+                </Button>
+            </StackLayout>
+            <StackLayout Orientation="Vertical" HorizontalOptions="Center" >
+                <Button
                  x:Name="DeleteExelBtn"
                  Text="Удалить файл!"
                  Style="{StaticResource buttonStlyle}"
                  HorizontalOptions="Center"
-                 Clicked="DeleteExelBtn_Clicked">
+                 Clicked="DeleteExelBtn_Clicked"
+                 WidthRequest="130">
         </Button>
         <Button
                  x:Name="DeleteLocalBtn"
                  Text="Очистить лок. базу"
                  Style="{StaticResource buttonStlyle}"
-                 HorizontalOptions="Center">
+                 HorizontalOptions="Center"
+                 WidthRequest="130">
         </Button>
-
+            </StackLayout>
+        </StackLayout>
         <Label x:Name="ResultEntry" Text="" Margin="10" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center" />
 
     </StackLayout>

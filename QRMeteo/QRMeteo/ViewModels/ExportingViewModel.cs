@@ -81,7 +81,7 @@ namespace QRMeteo.ViewModels
 
             foreach (var item in inventory)
             {
-                data.Values.Add(new List<string>() { item.Name, item.InventoryNumber,item.LocationItem });
+                data.Values.Add(new List<string>() { item.Name, item.InventoryNumber,item.LocationItem});
             }
 
             excelService.InsertDataIntoSheet(filepath, "Inventory", data);
