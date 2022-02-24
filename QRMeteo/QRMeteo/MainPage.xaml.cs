@@ -26,14 +26,13 @@ namespace QRMeteo
 
         private string badFormatString = null;//при получении неформатной строки
 
-        private ResievedData resivedData;
-        private IntventoryObject inventoryScanResult;
+     
+        private InventoryObject inventoryScanResult;
         ExportingViewModel Model = new ExportingViewModel();
 
         public MainPage()
         {
-            resivedData = new ResievedData();
-            inventoryScanResult = new IntventoryObject();
+            inventoryScanResult = new InventoryObject();
 
             BindingContext = Model;
 
@@ -88,6 +87,8 @@ namespace QRMeteo
             LocalDBPage page = new LocalDBPage();
             await Navigation.PushAsync(page);
             page.SetViewModel(Model);
+            Model.AddItemsToCollection(App.Database.GetItems());
+  
         }
         private async void ExcelDB_Clicked(object sendr,EventArgs e)
         {
@@ -196,12 +197,17 @@ namespace QRMeteo
                 inventoryScanResult.LocationItem = splitedStrings[4];
                 PrintReqData();
 
-                Model.AddItemToCollection(new IntventoryObject() {
+                InventoryObject tempOjj = new InventoryObject()
+                {
                     Name = inventoryScanResult.Name,
                     InventoryNumber = inventoryScanResult.InventoryNumber,
                     LocationItem = inventoryScanResult.LocationItem,
                     TargetHttpPosString = inventoryScanResult.TargetHttpPosString
-                });
+                };
+
+                Model.AddItemToCollection(tempOjj);
+                App.Database.SaveItem(tempOjj);
+
             }
             else
             {

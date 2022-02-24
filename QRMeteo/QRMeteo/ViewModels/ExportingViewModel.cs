@@ -17,7 +17,7 @@ namespace QRMeteo.ViewModels
     {
         public ICommand ExportToExcelCommand { private set; get; }
         private ExcelServises excelService;
-        public ObservableCollection<IntventoryObject> inventory;
+        public ObservableCollection<InventoryObject> inventory;
 
         private string fileName;//строка названия фаила
         private string filepath;//гле находится база
@@ -25,12 +25,8 @@ namespace QRMeteo.ViewModels
 
         public ExportingViewModel()
         {
-            inventory = new ObservableCollection<IntventoryObject>();
-            //{
-            //   new IntventoryObject{ Name ="dddd", InventoryNumber = "12345"},
-            //   new IntventoryObject{ Name ="aaaa", InventoryNumber = "3421"}
-            //};
-
+            inventory = new ObservableCollection<InventoryObject>();
+           
             ExportToExcelCommand = new Command(() => ExportToExcel());
             excelService = new ExcelServises();
 
@@ -39,9 +35,26 @@ namespace QRMeteo.ViewModels
             GenerateNewFile();
         }
 
-        public void AddItemToCollection(IntventoryObject inv)
+        //добавляем один объект из сканирования
+        public void AddItemToCollection(InventoryObject inv)
         {
             inventory.Add(inv);
+        }
+
+        //добавляем все объекты из базы данных
+        public void AddItemsToCollection(IEnumerable<InventoryObject> inv)
+        {
+            inventory.Clear();
+
+            foreach (var obj in inv)
+            {
+                inventory.Add(obj);
+            }
+        }
+
+        public void ClearWiewList()
+        {
+            inventory.Clear();
         }
 
         private void GenerateNewFile()

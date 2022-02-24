@@ -50,15 +50,13 @@ namespace QRMeteo
             // Определяем формат отображения данных
             ItemTemplate = new DataTemplate(() =>
             {
-                    // привязка к свойству Name
+
                     Label titleLabel = new Label { FontSize = 18 };
                 titleLabel.SetBinding(Label.TextProperty, "Name");
 
-                    // привязка к свойству Company
                     Label companyLabel = new Label();
                 companyLabel.SetBinding(Label.TextProperty, "InventoryNumber");
 
-                    // привязка к свойству Price
                     Label priceLabel = new Label();
                 priceLabel.SetBinding(Label.TextProperty, "LocationItem");
 
@@ -81,6 +79,16 @@ namespace QRMeteo
             await Navigation.PopAsync();
         }
 
+        private async void ClearLocalDBBtn(object sender,EventArgs e)
+        {
+            bool result = await DisplayAlert("Подтвердить действие", "Вы хотите удалить базу данных?", "Да", "Нет");
+            if (result)
+            {
+                Model.ClearWiewList();
+                App.Database.ClearDataBase();
+            }
+        }
+
         private void WriteToExelBtn_Clicked(object sender, EventArgs e)
         {
             ResultEntry.Text = "Запись в файл";
@@ -88,7 +96,7 @@ namespace QRMeteo
 
         private async void DeleteExelBtn_Clicked(object sender, EventArgs e)
         {
-            bool result = await DisplayAlert("Подтвердить действие", "Вы хотите удалить элемент?", "Да", "Нет");
+            bool result = await DisplayAlert("Подтвердить действие", "Вы хотите удалить фаил EXEL?", "Да", "Нет");
             if (result)
             {
                 Model.DeleteFile();
@@ -98,7 +106,7 @@ namespace QRMeteo
 
         public async void OnItemTappedAsync(object sender, ItemTappedEventArgs e)
         {
-            IntventoryObject invObj = e.Item as IntventoryObject;
+            InventoryObject invObj = e.Item as InventoryObject;
             string uri = invObj.TargetHttpPosString;
 
             try

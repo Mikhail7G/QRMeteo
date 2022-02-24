@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SQLite;
 
 namespace QRMeteo.DBExcel
 {
-    public class IntventoryObject
+    [Table("Inventory")]
+    public class InventoryObject
     {
 
+        [PrimaryKey, AutoIncrement, Column("id")]
+        public int Id { set; get; }
 
         public string TargetHttpPosString { set; get; } //ссылка на бд в гугл таблице 
         public string PosInDBList { set; get; }         //позиция в бд для ручного поиска

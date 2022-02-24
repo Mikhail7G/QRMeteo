@@ -48,7 +48,17 @@
                  Clicked="BackBtn_Clicked"
                  WidthRequest="130"
                  HeightRequest="55">
-        </Button>
+                </Button>
+                <Button
+                 x:Name="DeleteExelBtn"
+                 Text="Удалить файл!"
+                 Style="{StaticResource buttonStlyle}"
+                 HorizontalOptions="Center"
+                 Clicked="DeleteExelBtn_Clicked"
+                 WidthRequest="130">
+                </Button>
+            </StackLayout>
+            <StackLayout Orientation="Vertical" HorizontalOptions="Center" >
                 <Button
                  x:Name="WriteToExelBtn"
                  Text="Запись в Excel"
@@ -58,21 +68,13 @@
                  Clicked="WriteToExelBtn_Clicked"
                  WidthRequest="130">
                 </Button>
-            </StackLayout>
-            <StackLayout Orientation="Vertical" HorizontalOptions="Center" >
-                <Button
-                 x:Name="DeleteExelBtn"
-                 Text="Удалить файл!"
-                 Style="{StaticResource buttonStlyle}"
-                 HorizontalOptions="Center"
-                 Clicked="DeleteExelBtn_Clicked"
-                 WidthRequest="130">
-        </Button>
+  
         <Button
                  x:Name="DeleteLocalBtn"
                  Text="Очистить лок. базу"
                  Style="{StaticResource buttonStlyle}"
                  HorizontalOptions="Center"
+                 Clicked ="ClearLocalDBBtn"
                  WidthRequest="130">
         </Button>
             </StackLayout>
