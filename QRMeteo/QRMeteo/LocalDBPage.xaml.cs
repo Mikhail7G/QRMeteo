@@ -117,6 +117,8 @@ namespace QRMeteo
                     // Так как ссылаемся на ячейки из гугл таблиц необходимо наличие программы Google Табицы и надичие доступа к таблице
                     await Browser.OpenAsync(new Uri(uri), BrowserLaunchMode.SystemPreferred);
                 }
+                ((ListView)sender).SelectedItem = null;// очищаем выделение из листа
+
             }
             catch (Exception ex)
             {

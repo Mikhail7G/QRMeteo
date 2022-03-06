@@ -35,6 +35,7 @@ namespace QRMeteo
             inventoryScanResult = new InventoryObject();
 
             BindingContext = Model;
+            Model.DuplicateNotify += PrintDuplicateData;
 
             InitializeComponent();
             SetTapGesture();
@@ -104,7 +105,6 @@ namespace QRMeteo
                 var result = await scanner.ScanAsync();
                 if (result != null) 
                 {
-                    //ScanResultEntry.Text = result;
                     SplitResultString(result);
                     //await GetReqAsync(result);
                 }
@@ -197,16 +197,17 @@ namespace QRMeteo
                 inventoryScanResult.LocationItem = splitedStrings[4];
                 PrintReqData();
 
-                InventoryObject tempOjj = new InventoryObject()
+                //добавляем объект в базу данных
+                InventoryObject tempObj = new InventoryObject()
                 {
                     Name = inventoryScanResult.Name,
                     InventoryNumber = inventoryScanResult.InventoryNumber,
                     LocationItem = inventoryScanResult.LocationItem,
-                    TargetHttpPosString = inventoryScanResult.TargetHttpPosString
+                    TargetHttpPosString = inventoryScanResult.TargetHttpPosString,
+                    HashCode = inventoryScanResult.TargetHttpPosString.GetHashCode()
                 };
 
-                Model.AddItemToCollection(tempOjj);
-                App.Database.SaveItem(tempOjj);
+                Model.AddItemToCollection(tempObj);  //ViewModel
 
             }
             else
@@ -214,6 +215,21 @@ namespace QRMeteo
                 badFormatString = str;
                 PrintBadFormat();
             }
+        }
+
+        private void PrintDuplicateData(string mes)
+        {
+            FormattedString formattedString = new FormattedString();
+            formattedString.Spans.Add(new Span
+            {
+                Text = mes + ":\n",
+                ForegroundColor = Color.Aquamarine
+            });
+            formattedString.Spans.Add(new Span
+            {
+                Text = ScanResultEntry.Text
+            });
+            ScanResultEntry.FormattedText = formattedString;
         }
 
         private void PrintReqData()

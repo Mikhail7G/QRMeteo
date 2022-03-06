@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Локальная база"
              x:Class="QRMeteo.LocalDBPage">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -27,7 +28,7 @@
                 <DataTemplate>
                     <ViewCell>
                         <ViewCell.View>
-                            <StackLayout>
+                            <StackLayout Padding="5,0,5,0" >
                                 <Label Text="{Binding Name}" FontSize="15" TextColor="White" />
                                 <Label Text="{Binding InventoryNumber}" TextColor="Wheat" />
                                 <Label Text="{Binding LocationItem}" TextColor="Aquamarine" />

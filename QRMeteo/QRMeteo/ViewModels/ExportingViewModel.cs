@@ -22,6 +22,9 @@ namespace QRMeteo.ViewModels
         private string fileName;//строка названия фаила
         private string filepath;//гле находится база
 
+        public delegate void InsertDataHandler(string message);
+        public event InsertDataHandler DuplicateNotify;
+
 
         public ExportingViewModel()
         {
@@ -38,7 +41,17 @@ namespace QRMeteo.ViewModels
         //добавляем один объект из сканирования
         public void AddItemToCollection(InventoryObject inv)
         {
-            inventory.Add(inv);
+            inventory.Add(inv);//добавляем в viewList
+
+            if (App.Database.FindItemByHachCode(inv.HashCode))//поиск дубликатов
+            {
+                DuplicateNotify?.Invoke("Обнаружен дубликат");
+            }
+            else
+            {
+                        
+            }
+            App.Database.SaveItem(inv); //сохраняем в локальную базу
         }
 
         //добавляем все объекты из базы данных

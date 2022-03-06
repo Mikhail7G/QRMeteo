@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using QRMeteo.DBExcel;
 using SQLite;
@@ -26,6 +27,14 @@ namespace QRMeteo.Service
         public InventoryObject GetItem(int id)
         {
             return sqlConnect.Get<InventoryObject>(id);
+        }
+
+        public bool FindItemByHachCode(int code)//истина, если дубликат уже в БД
+        {
+
+            var conn = sqlConnect.Table<InventoryObject>().Where(v => v.HashCode == code).ToList();
+
+            return conn.Count > 0;
         }
 
         public void ClearDataBase()

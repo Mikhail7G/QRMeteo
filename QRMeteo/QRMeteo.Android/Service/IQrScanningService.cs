@@ -24,13 +24,24 @@ namespace QRMeteo.Droid.Service
         public async Task<string> ScanAsync()
         {
             var optionsDefault = new MobileBarcodeScanningOptions();
-            var optionsCustom = new MobileBarcodeScanningOptions();
+            var optionsCustom = new MobileBarcodeScanningOptions
+            {
+                AutoRotate = true,
+                UseNativeScanning = true,
+                TryHarder = true,
+                TryInverted = true,
+                UseFrontCameraIfAvailable = false
+
+            };
 
             var scanner = new MobileBarcodeScanner()
             {
                 TopText = "Сканируем код",
                 BottomText = "Ожидание",
+
             };
+           
+
 
             try
             {

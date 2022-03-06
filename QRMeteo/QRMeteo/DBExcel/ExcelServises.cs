@@ -17,7 +17,8 @@ namespace QRMeteo.DBExcel
         
         public string FilePath { set; get; }//полная ссылка на путь до файла
 
-        private Cell ConstructCell(string value, CellValues dataTypes) =>//генератор ячеек, что в ней хранить и в каом формате
+        //генератор ячеек, что в ней хранить и в каом формате
+        private Cell ConstructCell(string value, CellValues dataTypes) =>
                new Cell()
                {
                    CellValue = new CellValue(value),
