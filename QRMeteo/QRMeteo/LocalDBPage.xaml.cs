@@ -28,10 +28,10 @@ namespace QRMeteo
             Model = model;
             BindingContext = Model;
             //SetDataToView();
-
             inventoryList.ItemsSource = Model.inventory;
         }
 
+        [Obsolete]
         public void SetDataToView()
         {
             Label header = new Label
@@ -85,7 +85,6 @@ namespace QRMeteo
             if (result)
             {
                 Model.ClearWiewList();
-                App.Database.ClearDataBase();
             }
         }
 

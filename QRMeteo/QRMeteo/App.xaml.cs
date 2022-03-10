@@ -12,18 +12,19 @@ namespace QRMeteo
         public const string dbName = "InventoryDB";
         private static SqlDBControllerService database;
 
-        public static SqlDBControllerService Database {
-
+        public static SqlDBControllerService Database
+        {
             get
             {
-                if(database==null)
+                if (database == null) 
                 {
                     database = new SqlDBControllerService(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), dbName));
                 }
                 return database;
             }
 
-             private set => database = value; }
+             private set => database = value; 
+        }
 
         public App()
         {

@@ -241,5 +241,10 @@ namespace QRMeteo
         {
             ScanResultEntry.Text = String.Format("Неверный формат входной строки! \n {0}", badFormatString);
         }
+
+        private void Duplicate_Toggled(object sender, ToggledEventArgs e)
+        {
+            Model.WriteDuplicates = e.Value;
+        }
     }
 }

@@ -15,7 +15,12 @@ namespace QRMeteo.ViewModels
 {
     public class ExportingViewModel
     {
+        public bool WriteDuplicates { set; get; } = true;
+
         public ICommand ExportToExcelCommand { private set; get; }
+        public ICommand DeleteExcelFileCommand { private set; get; }
+        public ICommand ClearLocalDBCommand { private set; get; }
+
         private ExcelServises excelService;
         public ObservableCollection<InventoryObject> inventory;
 
@@ -31,6 +36,10 @@ namespace QRMeteo.ViewModels
             inventory = new ObservableCollection<InventoryObject>();
            
             ExportToExcelCommand = new Command(() => ExportToExcel());
+
+            //DeleteExcelFileCommand = new Command(() => DeleteFile());INOP
+            //ClearLocalDBCommand = new Command(() => ClearWiewList());
+
             excelService = new ExcelServises();
 
             fileName = "InventoryDB.xlsx";//{Guid.NewGuid()}
@@ -51,6 +60,7 @@ namespace QRMeteo.ViewModels
             {
                         
             }
+            if(WriteDuplicates)
             App.Database.SaveItem(inv); //сохраняем в локальную базу
         }
 
@@ -68,6 +78,7 @@ namespace QRMeteo.ViewModels
         public void ClearWiewList()
         {
             inventory.Clear();
+            App.Database.ClearDataBase();
         }
 
         private void GenerateNewFile()

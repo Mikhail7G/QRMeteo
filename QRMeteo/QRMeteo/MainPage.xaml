@@ -48,8 +48,7 @@
         
         <StackLayout Orientation="Horizontal">
             <Label x:Name="DuplicateEntry" Text="Сохранять дубликаты:" Margin="10" TextColor="White" />
-            <Switch IsToggled="true" VerticalOptions="CenterAndExpand"
-             HorizontalOptions="Center"/>
+            <Switch IsToggled="true" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" Toggled= "Duplicate_Toggled"/>
         </StackLayout>
         
         <Label x:Name="ScanResultEntry" Text="Результат сканирования" Margin="10" TextColor="White" />
