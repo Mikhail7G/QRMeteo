@@ -30,6 +30,10 @@ namespace QRMeteo.ViewModels
         public delegate void InsertDataHandler(string message);
         public event InsertDataHandler DuplicateNotify;
 
+        private const string INDEX_FORMULA = "Для поиска индекса в счетах: =ИНДЕКС('21'!A:A;ПОИСКПОЗ(A2;'21'!B:B;0))";
+        private const string NAME_FORMULA = "Для поиска названия в счетах: =ВПР(A2;'21'!B:B;1;0)";
+
+
 
         public ExportingViewModel()
         {
@@ -94,7 +98,8 @@ namespace QRMeteo.ViewModels
 
                 var data = new ExcelStruct
                 {
-                    Header = new List<string>() { "Название", "Инвентарный номер", "Местонахождение" }
+                    Header = new List<string>() { "Название", "Инвентарный номер", "Местонахождение", "Количество", "Номер в ведомости", "Название ", "Инв Номер",
+                                                   INDEX_FORMULA, NAME_FORMULA }
                 };
 
                 excelService.SetHeaders(filepath, "Inventory", data);
@@ -109,6 +114,8 @@ namespace QRMeteo.ViewModels
                 filepath = Path.Combine(excelService.appFolder, fileName);
                 File.Delete(filepath);
                 GenerateNewFile();
+                // excelService.ClearCells(filepath, "Inventory");
+
             }
         }
 
@@ -118,7 +125,7 @@ namespace QRMeteo.ViewModels
 
             foreach (var item in inventory)
             {
-                data.Values.Add(new List<string>() { item.Name, item.InventoryNumber,item.LocationItem});
+                data.Values.Add(new List<string>() { item.Name, item.InventoryNumber, item.LocationItem, item.Quantity});
             }
 
             excelService.InsertDataIntoSheet(filepath, "Inventory", data);

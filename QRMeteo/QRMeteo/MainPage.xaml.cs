@@ -181,6 +181,32 @@ namespace QRMeteo
             }
         }
 
+        private async void Settings_Clicked(object sender, EventArgs e)
+        {
+            await PickAndShow(PickOptions.Default);
+        }
+
+        async Task<FileResult> PickAndShow(PickOptions options)
+        {
+            try
+            {
+                var result = await FilePicker.PickAsync(options);
+                if (result != null)
+                {
+                    string filePath = result.FullPath;
+                    ScanResultEntry.Text = filePath;
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return null;
+        }
+
         private void SplitResultString(string str)
         {
             //Разбитие текста на составляющие 1-URL в таблице 2-... Пока так

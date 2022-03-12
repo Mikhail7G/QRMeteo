@@ -39,6 +39,9 @@
             </ListView.ItemTemplate>
         </ListView>
 
+        <Frame BackgroundColor="DimGray"  Padding="5" CornerRadius="0" >
+        </Frame>
+
         <StackLayout Orientation="Horizontal" HorizontalOptions="Center" >
             <StackLayout Orientation="Vertical" HorizontalOptions="Center" >
                 <Button

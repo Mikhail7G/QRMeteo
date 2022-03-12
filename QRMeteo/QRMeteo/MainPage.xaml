@@ -21,27 +21,27 @@
         <Frame BackgroundColor="DimGray"  Padding="5" CornerRadius="0" >
         </Frame>
         <Button
-                 x:Name="FastScanBtn"
-                 Text="Сканировать"
-                 Style="{StaticResource buttonStlyle}"
-                 HorizontalOptions="Center"
-                 Clicked="FastScanBtn_Clicked">
+                x:Name="Settings"
+                Text="Настройки"
+                Style="{StaticResource buttonStlyle}"
+                HorizontalOptions="Center"
+                Clicked="Settings_Clicked">
         </Button>
 
-         <Button
+        <Button
                  x:Name="DBButton"
                  Text="Локальная база"
                  Style="{StaticResource buttonStlyle}"  
                  HorizontalOptions="Center"
                  Clicked="DBBtn_Clicked">
-           </Button>
-        
+        </Button>
+
         <Button
                 x:Name="ExcelDBBtn"
                 Text="Excel файл"
                 Style="{StaticResource buttonStlyle}"
                 HorizontalOptions="Center"
-                 Clicked="ExcelDB_Clicked">
+                Clicked="ExcelDB_Clicked">
         </Button>
 
         <Entry x:Name="ScanLocationdEntry"  Placeholder = "Где ищем" TextColor="White"/>
@@ -53,6 +53,26 @@
         
         <Label x:Name="ScanResultEntry" Text="Результат сканирования" Margin="10" TextColor="White" />
         <Label x:Name="InternetStatusLabel" Text="Нет полкючения к сети" Margin="10" VerticalOptions="Center" HorizontalOptions="Center" TextColor="White" />
+        <!--<Button
+                 x:Name="FastScanBtn"
+                 Text="Сканировать"
+                 Style="{StaticResource buttonStlyle}"
+                 HorizontalOptions="Center"
+                 Clicked="FastScanBtn_Clicked"
+                 VerticalOptions="EndAndExpand"
+                Margin="10">
+        </Button>-->
+
+
+        <ImageButton
+                    Source="ScanIcon92.png"
+                    HorizontalOptions="Center"
+                    VerticalOptions="EndAndExpand"
+                    Clicked="FastScanBtn_Clicked"
+                    Margin="10"
+                    BackgroundColor="Transparent">
+
+        </ImageButton>
 
     </StackLayout>
 
