@@ -22,7 +22,7 @@
         </Frame>
         <Button
                 x:Name="Settings"
-                Text="Настройки"
+                Text="Выбрать"
                 Style="{StaticResource buttonStlyle}"
                 HorizontalOptions="Center"
                 Clicked="Settings_Clicked">

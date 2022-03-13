@@ -93,7 +93,14 @@ namespace QRMeteo
         }
         private async void ExcelDB_Clicked(object sendr,EventArgs e)
         {
-           await Model.OpenFile();
+           if(await Model.OpenFile())
+            {
+
+            }
+           else
+            {
+                ScanResultEntry.Text = "Файл не найден, создайте или загрузите с хранилища";
+            }
         }
 
         private async void StartQRScan()
@@ -185,6 +192,10 @@ namespace QRMeteo
         {
             await PickAndShow(PickOptions.Default);
         }
+        private void Duplicate_Toggled(object sender, ToggledEventArgs e)
+        {
+            Model.WriteDuplicates = e.Value;
+        }
 
         async Task<FileResult> PickAndShow(PickOptions options)
         {
@@ -193,8 +204,10 @@ namespace QRMeteo
                 var result = await FilePicker.PickAsync(options);
                 if (result != null)
                 {
+                    await result.OpenReadAsync();
                     string filePath = result.FullPath;
                     ScanResultEntry.Text = filePath;
+                    Model.ImportFIle(filePath);
                 }
 
                 return result;
@@ -266,11 +279,6 @@ namespace QRMeteo
         private void PrintBadFormat()
         {
             ScanResultEntry.Text = String.Format("Неверный формат входной строки! \n {0}", badFormatString);
-        }
-
-        private void Duplicate_Toggled(object sender, ToggledEventArgs e)
-        {
-            Model.WriteDuplicates = e.Value;
         }
     }
 }

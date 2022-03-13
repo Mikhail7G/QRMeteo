@@ -25,7 +25,7 @@ namespace QRMeteo.ViewModels
         public ObservableCollection<InventoryObject> inventory;
 
         private string fileName;//строка названия фаила
-        private string filepath;//гле находится база
+        private string filePath;//гле находится база
 
         public delegate void InsertDataHandler(string message);
         public event InsertDataHandler DuplicateNotify;
@@ -47,8 +47,9 @@ namespace QRMeteo.ViewModels
             excelService = new ExcelServises();
 
             fileName = "InventoryDB.xlsx";//{Guid.NewGuid()}
+            filePath = Path.Combine(excelService.appFolder, fileName);
 
-            GenerateNewFile();
+            //GenerateNewFile();
         }
 
         //добавляем один объект из сканирования
@@ -90,57 +91,83 @@ namespace QRMeteo.ViewModels
         
             if (File.Exists(Path.Combine(excelService.appFolder, fileName)))
             {
-                filepath = Path.Combine(excelService.appFolder, fileName);
+                filePath = Path.Combine(excelService.appFolder, fileName);
+                SetHeaders();
             }
             else
             {
-                filepath = excelService.GenerateExcel(fileName);
-
-                var data = new ExcelStruct
-                {
-                    Header = new List<string>() { "Название", "Инвентарный номер", "Местонахождение", "Количество", "Номер в ведомости", "Название ", "Инв Номер",
-                                                   INDEX_FORMULA, NAME_FORMULA }
-                };
-
-                excelService.SetHeaders(filepath, "Inventory", data);
+                filePath = excelService.GenerateExcel(fileName);
+                SetHeaders();
             }
 
+        }
+
+        private  void SetHeaders()
+        {
+            excelService.ClearCells(filePath, "Inventory");
+ 
+
+            var data = new ExcelStruct
+            {
+                Header = new List<string>() { "Название", "Инвентарный номер", "Местонахождение", "Количество", "Номер в ведомости", "Название ", "Инв Номер",
+                                                   INDEX_FORMULA, NAME_FORMULA }
+            };
+
+            excelService.SetHeaders(filePath, "Inventory", data);
+
+        }
+
+        public void ImportFIle(string filename)
+        {
+            if (File.Exists(filePath))
+            {
+              
+                File.Delete(filePath);
+            }
+            File.Copy(filename, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments).ToString());
         }
 
         public void DeleteFile()
         {
             if (File.Exists(Path.Combine(excelService.appFolder, fileName)))
             {
-                filepath = Path.Combine(excelService.appFolder, fileName);
-                File.Delete(filepath);
-                GenerateNewFile();
+                filePath = Path.Combine(excelService.appFolder, fileName);
+                File.Delete(filePath);
+                //GenerateNewFile();
                 // excelService.ClearCells(filepath, "Inventory");
 
             }
         }
 
-        void ExportToExcel()
+        public void ExportToExcel()
         {
             var data = new ExcelStruct();
+            GenerateNewFile();
 
-            foreach (var item in inventory)
+            if (File.Exists(filePath))
             {
-                data.Values.Add(new List<string>() { item.Name, item.InventoryNumber, item.LocationItem, item.Quantity});
+                foreach (var item in inventory)
+                {
+                     data.Values.Add(new List<string>() { item.Name, item.InventoryNumber, item.LocationItem, item.Quantity });
+                }
+
+                excelService.InsertDataIntoSheet(filePath, "Inventory", data);
             }
 
-            excelService.InsertDataIntoSheet(filepath, "Inventory", data);
         }
 
-         public async Task OpenFile()
+         public async Task<bool> OpenFile()
         {
             if (File.Exists(Path.Combine(excelService.appFolder, fileName)))
             {
-                filepath = Path.Combine(excelService.appFolder, fileName);
+                filePath = Path.Combine(excelService.appFolder, fileName);
                 await Launcher.OpenAsync(new OpenFileRequest()
                 {
-                    File = new ReadOnlyFile(filepath)
+                    File = new ReadOnlyFile(filePath)
                 });
+                return true;
             }
+            return false;
         }
     }
 }

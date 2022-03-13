@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -68,12 +69,11 @@ namespace QRMeteo.DBExcel
             using (var document = SpreadsheetDocument.Open(fileName, true))
             {
                 var wbPart = document.WorkbookPart;
-                var sheets = wbPart.Workbook.GetFirstChild<Sheets>().
-                             Elements<Sheet>().FirstOrDefault().
-                             Name = sheetName;
 
-                var part = wbPart.WorksheetParts.First();
-                var sheetData = part.Worksheet.Elements<SheetData>().First();
+                var workId = wbPart.Workbook.Descendants<Sheet>().First(s => s.Name == "Inventory").Id;  //Id первого листа с датой скана
+                var wsParts = wbPart.GetPartById(workId) as WorksheetPart;                               //получаем компонент по его ID
+                var worksheet = wsParts.Worksheet;                                                       //Получаем дочерний компонент
+                var sheetData = worksheet.GetFirstChild<SheetData>();                                    //добавляем новые ячейки данных 
 
                 foreach (var value in data.Values)
                 {
@@ -96,34 +96,40 @@ namespace QRMeteo.DBExcel
             using (var document = SpreadsheetDocument.Open(fileName, true))
             {
                 var wbPart = document.WorkbookPart;
-                var sheets = wbPart.Workbook.GetFirstChild<Sheets>().
-                             Elements<Sheet>().FirstOrDefault().
-                             Name = sheetName;
 
-                var part = wbPart.WorksheetParts.First();
-                var sheetData = part.Worksheet.Elements<SheetData>().First();
+                //Осуществляем поиск необходимого листа по ID, далее ищем в фаиле рабочую зону по найденному ID для получения ячеек
+                var workId = wbPart.Workbook.Descendants<Sheet>().First(s => s.Name == "Inventory").Id;  //Id первого листа с датой скана
+                var wsParts = wbPart.GetPartById(workId) as WorksheetPart;                               //получаем компонент по его ID
+                var worksheet = wsParts.Worksheet;                                                       //Получаем дочерний компонент
+                var sheetData = worksheet.GetFirstChild<SheetData>();                                    //добавляем новые ячейки заголовков 
 
                 var row = sheetData.AppendChild(new Row());
 
                 foreach (var header in data.Header)
                 {
                     row.Append(ConstructCell(header, CellValues.String));
-                }             
+                }
                 wbPart.Workbook.Save();
             }
 
         }
         
         //очистка ячеек таблицы
-        public void ClearCells(string fileName, string sheetName)
+         public void ClearCells(string fileName, string sheetName)
         {
             using (var document = SpreadsheetDocument.Open(fileName, true))
             {
                 WorkbookPart wbPart = document.WorkbookPart;
-                var worksheet = wbPart.WorksheetParts.First().Worksheet;
-                var rows = worksheet.GetFirstChild<SheetData>().Elements<Row>();
+              
+                //Осуществляем поиск необходимого листа по ID, далее ищем в фаиле рабочую зону по найденному ID для получения ячеек
+                var workId = wbPart.Workbook.Descendants<Sheet>().First(s => s.Name == "Inventory").Id;  //Id первого листа с датой скана
+                var wsParts = wbPart.GetPartById(workId) as WorksheetPart;                               //получаем компонент по его ID
+                var worksheet = wsParts.Worksheet;                                                       //Получаем дочерний компонент
+                var rows = worksheet.GetFirstChild<SheetData>().Elements<Row>();                         //получаем все ячейки на нужеом листе
 
-               foreach (var  r in rows.ToList())
+
+
+                foreach (var r in rows.ToList())
                 {
                     r.Remove();
                 }
