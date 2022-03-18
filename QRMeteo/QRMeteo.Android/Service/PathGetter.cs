@@ -18,6 +18,7 @@ namespace QRMeteo.Droid.Service
     public class PathGetter : IPathGetter
 
     {
+        [Obsolete]
         public string GetPath()
         {
 

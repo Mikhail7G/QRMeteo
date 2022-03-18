@@ -67,7 +67,6 @@ namespace QRMeteo
             {
                 if (targetHttpPosString.Length > 0)
                 {
-                    string url = HttpUtility.UrlDecode(targetHttpPosString);//конвертим в url
                     // Так как ссылаемся на ячейки из гугл таблиц необходимо наличие программы Google Табицы и надичие доступа к таблице
                     await Browser.OpenAsync(new Uri(targetHttpPosString), BrowserLaunchMode.SystemPreferred);
                 }

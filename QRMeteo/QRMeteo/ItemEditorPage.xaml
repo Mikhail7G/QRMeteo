@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Редактор"
+             x:Class="QRMeteo.ItemEditorPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style
+                x:Key="buttonStlyle"
+                TargetType="Button">
+                <Setter Property="BackgroundColor" Value="DeepSkyBlue"/>
+                <Setter Property="FontSize" Value="Small"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout
+        BackgroundColor="Gray"
+        Orientation="Vertical">
+        <Frame BackgroundColor="DimGray"  Padding="5" CornerRadius="0" >
+        </Frame>
+        
+        <Label x:Name="ObjectLink" Text="Ссылка:" Margin="5" TextColor="Aquamarine" VerticalOptions="Center" HorizontalOptions="Center" />
+        <Label x:Name="ObjectLinkLbl" Text="{Binding TargetHttpPosString}" TextColor="White" />
+        <Frame BackgroundColor="DimGray"  Padding="5" CornerRadius="0" >
+        </Frame>
+        
+        <Label x:Name="ObjectName" Text="Название:" Margin="1" TextColor="Aquamarine" VerticalOptions="Center" HorizontalOptions="Center" />
+        <!--<Entry x:Name="ObjectNameEnt" Text="{Binding Name}" TextColor="White" />-->
+        <Editor x:Name="ObjectNameEnt" Text="{Binding Name}" HeightRequest="100" TextColor="White" TextChanged="NameEtryTextChanged"/>
+        <Frame BackgroundColor="DimGray"  Padding="5" CornerRadius="0" >
+        </Frame>
+
+        <Label x:Name="ObjectInventory" Text="Инв номер:" Margin="1" TextColor="Aquamarine" VerticalOptions="Center" HorizontalOptions="Center" />
+        <Entry x:Name="ObjectInventoryEnt" Text="{Binding InventoryNumber}" TextColor="White" Keyboard="Numeric" TextChanged="InventoryEntryChanged" />
+        <Frame BackgroundColor="DimGray"  Padding="5" CornerRadius="0" >
+        </Frame>
+
+        <Label x:Name="ObjectLocation" Text="Нахождение:" Margin="1" TextColor="Aquamarine" VerticalOptions="Center" HorizontalOptions="Center" />
+        <Entry x:Name="ObjectLicationEnt" Text="{Binding LocationItem}" TextColor="White" TextChanged="LocationEntryChanged" />
+        <Frame BackgroundColor="DimGray"  Padding="5" CornerRadius="0" >
+        </Frame>
+
+        <Label x:Name="ObjectQuantity" Text="Количество:" Margin="1" TextColor="Aquamarine" VerticalOptions="Center" HorizontalOptions="Center" />
+        <StackLayout
+             BackgroundColor="Gray"
+             Orientation="Horizontal">
+            <Entry x:Name="ObjectQuantityEnt" Text="{Binding Quantity}" TextColor="White" Keyboard="Numeric" TextChanged="QuantityEntryChanged"
+                   HorizontalOptions="FillAndExpand" />
+             <Stepper x:Name="StepperInv" Minimum="1" Increment="1" ValueChanged="StepperChanged" />
+        </StackLayout>
+        <Frame BackgroundColor="DimGray"  Padding="5" CornerRadius="0" >
+        </Frame>
+
+
+        <Frame BackgroundColor="DimGray"  Padding="5" CornerRadius="0" VerticalOptions="EndAndExpand" >
+        </Frame>
+
+    </StackLayout>
+
+</ContentPage>

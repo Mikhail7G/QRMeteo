@@ -23,7 +23,9 @@
         <ListView x:Name="inventoryList"
               HasUnevenRows="True"
               ItemsSource="{Binding Model.inventory}"
-              ItemTapped="OnItemTappedAsync">
+              ItemTapped="OnItemTappedAsync"
+              Refreshing="InventoryRefreshing"
+              IsPullToRefreshEnabled="True">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

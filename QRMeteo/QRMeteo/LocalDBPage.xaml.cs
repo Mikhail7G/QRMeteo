@@ -26,9 +26,21 @@ namespace QRMeteo
         public void SetViewModel(ExportingViewModel model)
         {
             Model = model;
-            BindingContext = Model;
-            //SetDataToView();
+            this.BindingContext = Model;
             inventoryList.ItemsSource = Model.inventory;
+        }
+
+        private void InventoryRefreshing(object sender, EventArgs e) //обновление данных в View
+        {
+            inventoryList.ItemsSource = null;
+            inventoryList.ItemsSource = Model.inventory;
+            inventoryList.IsRefreshing = false;
+        }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            inventoryList.BeginRefresh();
+
         }
 
         [Obsolete]
@@ -106,16 +118,12 @@ namespace QRMeteo
         public async void OnItemTappedAsync(object sender, ItemTappedEventArgs e)
         {
             InventoryObject invObj = e.Item as InventoryObject;
-            string uri = invObj.TargetHttpPosString;
-
             try
             {
-                if (uri.Length > 0)
-                {
-                    string url = HttpUtility.UrlDecode(uri);//конвертим в url
-                    // Так как ссылаемся на ячейки из гугл таблиц необходимо наличие программы Google Табицы и надичие доступа к таблице
-                    await Browser.OpenAsync(new Uri(uri), BrowserLaunchMode.SystemPreferred);
-                }
+                ItemEditorPage page = new ItemEditorPage();
+                await Navigation.PushAsync(page);
+                page.SetItemObject(invObj);
+
                 ((ListView)sender).SelectedItem = null;// очищаем выделение из листа
 
             }
@@ -123,6 +131,6 @@ namespace QRMeteo
             {
 
             }
-        }
+        }       
     }
 }
