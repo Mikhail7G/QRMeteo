@@ -1,13 +1,6 @@
 ﻿using QRMeteo.DBExcel;
 using QRMeteo.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -27,13 +20,12 @@ namespace QRMeteo
         {
             Model = model;
             this.BindingContext = Model;
-            inventoryList.ItemsSource = Model.inventory;
         }
 
         private void InventoryRefreshing(object sender, EventArgs e) //обновление данных в View
         {
             inventoryList.ItemsSource = null;
-            inventoryList.ItemsSource = Model.inventory;
+            inventoryList.ItemsSource = Model.Inventory;
             inventoryList.IsRefreshing = false;
         }
         protected override void OnAppearing()
@@ -57,7 +49,7 @@ namespace QRMeteo
             {
             HasUnevenRows = true,
             // Определяем источник данных
-            ItemsSource = Model.inventory,
+            ItemsSource = Model.Inventory,
 
             // Определяем формат отображения данных
             ItemTemplate = new DataTemplate(() =>
@@ -86,6 +78,7 @@ namespace QRMeteo
         };
             this.Content = new StackLayout { Children = { header, listView } };
         }
+
         private async void BackBtn_Clicked(object sender, EventArgs e)
         {
             await Navigation.PopAsync();
@@ -102,7 +95,7 @@ namespace QRMeteo
 
         private void WriteToExelBtn_Clicked(object sender, EventArgs e)
         {
-            ResultEntry.Text = "Запись в файл";
+            SetTextResultLabel("Запись в файл");
         }
 
         private async void DeleteExelBtn_Clicked(object sender, EventArgs e)
@@ -111,7 +104,7 @@ namespace QRMeteo
             if (result)
             {
                 Model.DeleteFile();
-                ResultEntry.Text = "Excel очищен";
+                SetTextResultLabel("Excel очищен");
             }
         }
 
@@ -131,6 +124,14 @@ namespace QRMeteo
             {
 
             }
-        }       
+        }     
+        
+        private void SetTextResultLabel(string text)
+        {
+            if (text.Length > 0)
+            {
+                ResultEntry.Text = text;
+            }
+        }
     }
 }

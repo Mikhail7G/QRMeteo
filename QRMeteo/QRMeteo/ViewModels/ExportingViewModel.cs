@@ -1,11 +1,9 @@
 ﻿
 using QRMeteo.DBExcel;
-using QRMeteo.Service;
 using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
@@ -22,7 +20,7 @@ namespace QRMeteo.ViewModels
         public ICommand ClearLocalDBCommand { private set; get; }
 
         private ExcelServises excelService;
-        public ObservableCollection<InventoryObject> inventory;
+        public ObservableCollection<InventoryObject> Inventory;
 
         private string fileName;//строка названия фаила
         private string filePath;//гле находится база
@@ -37,7 +35,7 @@ namespace QRMeteo.ViewModels
 
         public ExportingViewModel()
         {
-            inventory = new ObservableCollection<InventoryObject>();
+            Inventory = new ObservableCollection<InventoryObject>();
            
             ExportToExcelCommand = new Command(() => ExportToExcel());
 
@@ -47,7 +45,7 @@ namespace QRMeteo.ViewModels
             excelService = new ExcelServises();
 
             fileName = "InventoryDB.xlsx";//{Guid.NewGuid()}
-            filePath = Path.Combine(excelService.appFolder, fileName);
+            filePath = Path.Combine(excelService.AppFolder, fileName);
 
             //GenerateNewFile();
         }
@@ -55,8 +53,6 @@ namespace QRMeteo.ViewModels
         //добавляем один объект из сканирования
         public void AddItemToCollection(InventoryObject inv)
         {
-            inventory.Add(inv);//добавляем в viewList
-
             if (App.Database.FindItemByHachCode(inv.HashCode))//поиск дубликатов
             {
                 DuplicateNotify?.Invoke("Обнаружен дубликат");
@@ -65,33 +61,35 @@ namespace QRMeteo.ViewModels
             {
                         
             }
-            if(WriteDuplicates)
-            App.Database.SaveItem(inv); //сохраняем в локальную базу
+            if (WriteDuplicates)
+            {
+                Inventory.Add(inv);//добавляем в viewList
+                App.Database.SaveItem(inv); //сохраняем в локальную базу
+            }
         }
 
         //добавляем все объекты из базы данных
         public void AddItemsToCollection(IEnumerable<InventoryObject> inv)
         {
-            inventory.Clear();
+            Inventory.Clear();
 
             foreach (var obj in inv)
             {
-                inventory.Add(obj);
+                Inventory.Add(obj);
             }
         }
 
-        public void ClearWiewList()
+        public void ClearWiewList() //удаляем данные из локальной базы
         {
-            inventory.Clear();
+            Inventory.Clear();
             App.Database.ClearDataBase();
         }
 
         private void GenerateNewFile()
         {
         
-            if (File.Exists(Path.Combine(excelService.appFolder, fileName)))
+            if (File.Exists(filePath))
             {
-                filePath = Path.Combine(excelService.appFolder, fileName);
                 SetHeaders();
             }
             else
@@ -124,18 +122,14 @@ namespace QRMeteo.ViewModels
               
                 File.Delete(filePath);
             }
-            File.Copy(filename, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments).ToString());
+            File.Copy(filename, excelService.AppFolder);
         }
 
         public void DeleteFile()
         {
-            if (File.Exists(Path.Combine(excelService.appFolder, fileName)))
+            if (File.Exists(filePath))
             {
-                filePath = Path.Combine(excelService.appFolder, fileName);
                 File.Delete(filePath);
-                //GenerateNewFile();
-                // excelService.ClearCells(filepath, "Inventory");
-
             }
         }
 
@@ -146,7 +140,7 @@ namespace QRMeteo.ViewModels
 
             if (File.Exists(filePath))
             {
-                foreach (var item in inventory)
+                foreach (var item in Inventory)
                 {
                      data.Values.Add(new List<string>() { item.Name, item.InventoryNumber, item.LocationItem, item.Quantity });
                 }
@@ -158,9 +152,8 @@ namespace QRMeteo.ViewModels
 
          public async Task<bool> OpenFile()
         {
-            if (File.Exists(Path.Combine(excelService.appFolder, fileName)))
+            if (File.Exists(filePath))
             {
-                filePath = Path.Combine(excelService.appFolder, fileName);
                 await Launcher.OpenAsync(new OpenFileRequest()
                 {
                     File = new ReadOnlyFile(filePath)

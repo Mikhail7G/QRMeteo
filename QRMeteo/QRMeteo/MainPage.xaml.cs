@@ -28,7 +28,7 @@ namespace QRMeteo
 
      
         private InventoryObject inventoryScanResult;
-        ExportingViewModel Model = new ExportingViewModel();
+        public ExportingViewModel Model = new ExportingViewModel();
 
         public MainPage()
         {
@@ -82,10 +82,11 @@ namespace QRMeteo
             //кнопка быстрого сканирования с записью в гугл таблицу результата
             StartQRScan();
         }
-        private async void DBBtn_Clicked(object sender, EventArgs e)
+        private async void DBBtn_Clicked(object sender, EventArgs e) //открытие окна локальной базы сканов
         {
             LocalDBPage page = new LocalDBPage();
             await Navigation.PushAsync(page);
+
             page.SetViewModel(Model);
             Model.AddItemsToCollection(App.Database.GetItems());
   
@@ -98,7 +99,7 @@ namespace QRMeteo
             }
            else
             {
-                ScanResultEntry.Text = "Файл не найден, создайте или загрузите с хранилища";
+                SetTextResultLabel("Файл не найден, создайте или загрузите с хранилища");
             }
         }
 
@@ -174,16 +175,29 @@ namespace QRMeteo
             }
         }
 
+
         private void TestInternetConnection()
         {
             var currentConnect = Connectivity.NetworkAccess;
             if (currentConnect == NetworkAccess.Internet)
             {
-                InternetStatusLabel.Text = "Подключение к сети!";
+                SetInternetLabelText("Подключение к сети!");
             }
             else if (currentConnect == NetworkAccess.None)
             {
-                InternetStatusLabel.Text = "Нет подключения к сети!";
+                SetInternetLabelText("Нет подключения к сети!");
+            }
+        }
+
+        private void SetInternetLabelText(string text)
+        {
+            if(text.Length>0)
+            {
+                InternetStatusLabel.Text = text;
+            }
+            else
+            {
+                InternetStatusLabel.Text = "";
             }
         }
 
@@ -191,6 +205,7 @@ namespace QRMeteo
         {
             await PickAndShow(PickOptions.Default);
         }
+
         private void Duplicate_Toggled(object sender, ToggledEventArgs e)
         {
             Model.WriteDuplicates = e.Value;
@@ -267,8 +282,24 @@ namespace QRMeteo
             {
                 Text = ScanResultEntry.Text
             });
-            ScanResultEntry.FormattedText = formattedString;
+            SetFormattedTextResultLabel(formattedString);
         }
+
+        private void SetTextResultLabel(string text)
+        {
+            if (text.Length > 0)
+            {
+                ScanResultEntry.Text = text;
+            }
+        }
+        private void SetFormattedTextResultLabel(FormattedString text)
+        {
+            if (text.Spans.Count > 0)  
+            {
+                ScanResultEntry.FormattedText = text;
+            }
+        }
+
 
         private void PrintReqData()
         {

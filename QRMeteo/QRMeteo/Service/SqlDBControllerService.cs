@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using QRMeteo.DBExcel;
 using SQLite;
 
@@ -11,7 +7,7 @@ namespace QRMeteo.Service
     //работа с базой данных
     public class SqlDBControllerService
     {
-        SQLiteConnection sqlConnect;
+        private SQLiteConnection sqlConnect;
 
         public SqlDBControllerService(string dbpath)
         {
@@ -31,7 +27,6 @@ namespace QRMeteo.Service
 
         public bool FindItemByHachCode(int code)//истина, если дубликат уже в БД
         {
-
             var conn = sqlConnect.Table<InventoryObject>().Where(v => v.HashCode == code).ToList();
 
             return conn.Count > 0;

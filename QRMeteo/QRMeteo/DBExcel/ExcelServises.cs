@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using QRMeteo.Service;
+
 
 
 namespace QRMeteo.DBExcel
@@ -16,8 +13,7 @@ namespace QRMeteo.DBExcel
     public class ExcelServises
     {
         //локальная папка с базой
-        public string appFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
+        public string AppFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
         public string FilePath { set; get; }//полная ссылка на путь до файла
 
@@ -34,8 +30,8 @@ namespace QRMeteo.DBExcel
             Environment.SetEnvironmentVariable("MONO_URI_DOTNETRELATIVEORABSOLUTE", "true");
 
 
-            FilePath = Path.Combine(appFolder, fileName);
-            var document = SpreadsheetDocument.Create(Path.Combine(appFolder, fileName), SpreadsheetDocumentType.Workbook);
+            FilePath = Path.Combine(AppFolder, fileName);
+            var document = SpreadsheetDocument.Create(Path.Combine(AppFolder, fileName), SpreadsheetDocumentType.Workbook);
 
             var wbPart = document.AddWorkbookPart();
             wbPart.Workbook = new Workbook();
@@ -126,8 +122,6 @@ namespace QRMeteo.DBExcel
                 var wsParts = wbPart.GetPartById(workId) as WorksheetPart;                               //получаем компонент по его ID
                 var worksheet = wsParts.Worksheet;                                                       //Получаем дочерний компонент
                 var rows = worksheet.GetFirstChild<SheetData>().Elements<Row>();                         //получаем все ячейки на нужеом листе
-
-
 
                 foreach (var r in rows.ToList())
                 {
