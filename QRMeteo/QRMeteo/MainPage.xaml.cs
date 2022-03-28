@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Net;
 using System.IO;
 using System.Web;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Essentials;
-using DocumentFormat.OpenXml;
 using QRMeteo.Service;
 using QRMeteo.ViewModels;
 using QRMeteo.DBExcel;
@@ -22,10 +17,7 @@ namespace QRMeteo
 
         private string targetHttpPosString;//ссылка полученая из QR кода
         private readonly char[] specialSplitSymbol = new char[] { '|'};//Символ разделения стоки, входная строка точно делится символом < | > 
-        private readonly string googleScript = "https://script.google.com/macros/s/AKfycbz72RABZJTnMsxxODSvau9Ab867uxawrdVZ69kjXF5t1lsudlytD6WJh-QjeJtjGrN2qA/exec";
-
         private string badFormatString = null;//при получении неформатной строки
-
      
         private InventoryObject inventoryScanResult;
         public ExportingViewModel Model = new ExportingViewModel();
@@ -77,12 +69,13 @@ namespace QRMeteo
             }  
         }
 
-        private  void FastScanBtn_Clicked(object sender, EventArgs e)
+        private void StartScanButtonClicked(object sender, EventArgs e)
         {
             //кнопка быстрого сканирования с записью в гугл таблицу результата
             StartQRScan();
         }
-        private async void DBBtn_Clicked(object sender, EventArgs e) //открытие окна локальной базы сканов
+
+        private async void DataBaseButtonClicked(object sender, EventArgs e) //открытие окна локальной базы сканов
         {
             LocalDBPage page = new LocalDBPage();
             await Navigation.PushAsync(page);
@@ -91,7 +84,7 @@ namespace QRMeteo
             Model.AddItemsToCollection(App.Database.GetItems());
   
         }
-        private async void ExcelDB_Clicked(object sendr,EventArgs e)
+        private async void ExcelButtonClicked(object sendr,EventArgs e)
         {
            if(await Model.OpenFile())
             {
@@ -113,7 +106,6 @@ namespace QRMeteo
                 if (result != null) 
                 {
                     SplitResultString(result);
-                    //await GetReqAsync(result);
                 }
             }
             catch (Exception ex)
@@ -121,92 +113,33 @@ namespace QRMeteo
 
             }
         }
-        [Obsolete]
-        private  async Task PostReqAsync(string sendingData)
-        {
-            //пост запрос для google API, пока не используется 
-            WebRequest request = WebRequest.Create(googleScript);
-            request.Method = "POST";
-
-            string scanResult = HttpUtility.UrlEncode(sendingData);
-            byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(scanResult);
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.ContentLength = byteArray.Length;
-
-            using (Stream dataStream = request.GetRequestStream())
-            {
-                dataStream.Write(byteArray, 0, byteArray.Length);
-            }
-
-            WebResponse response = await request.GetResponseAsync();
-
-            using (Stream stream = response.GetResponseStream())
-            {
-                using (StreamReader reader = new StreamReader(stream))
-                {
-
-                }
-            }
-            response.Close();
-        }
-        [Obsolete]
-        private  async Task GetReqAsync(string sendingData)
-        {
-            //работает стабильно, протестировано с google API
-            var currentConnect = Connectivity.NetworkAccess;
-            if (currentConnect == NetworkAccess.None)
-            {
-                InternetStatusLabel.Text = "Нет подключения к сети, запись в локальную базу!";
-            }
-            else if (currentConnect == NetworkAccess.Internet)
-            {
-                //Используется GoogleAppsScript для внесения данных в таблицу, пока хватает этого
-
-                string googleAPI = googleScript;
-                googleAPI = googleScript + "?sdata=";
-                string scanResult = HttpUtility.UrlEncode(sendingData);
-                string result = string.Format("{0}{1}", googleAPI, scanResult);
-                WebRequest request = WebRequest.Create(result);
-                WebResponse response = await request.GetResponseAsync();
-
-                response.Close();
-
-                InternetStatusLabel.Text = "Отправлено в таблицу!\n Двойное нажатие по тексту откроет онлайн таблицу";
-            }
-        }
-
-
+      
         private void TestInternetConnection()
         {
             var currentConnect = Connectivity.NetworkAccess;
-            if (currentConnect == NetworkAccess.Internet)
+
+            switch (currentConnect)
             {
-                SetInternetLabelText("Подключение к сети!");
-            }
-            else if (currentConnect == NetworkAccess.None)
-            {
-                SetInternetLabelText("Нет подключения к сети!");
+                case NetworkAccess.Internet:
+                    SetInternetLabelText("Подключение к сети!");
+                    break;
+                case NetworkAccess.None:
+                    SetInternetLabelText("Нет подключения к сети!");
+                    break;
             }
         }
 
         private void SetInternetLabelText(string text)
         {
-            if(text.Length>0)
-            {
-                InternetStatusLabel.Text = text;
-            }
-            else
-            {
-                InternetStatusLabel.Text = "";
-            }
+            InternetStatusLabel.Text = text.Length > 0 ? text : "";
         }
 
-        private async void Settings_Clicked(object sender, EventArgs e)
+        private async void FileLoaderButtonClicked(object sender, EventArgs e)
         {
             await PickAndShow(PickOptions.Default);
         }
 
-        private void Duplicate_Toggled(object sender, ToggledEventArgs e)
+        private void DuplicateToggled(object sender, ToggledEventArgs e)
         {
             Model.WriteDuplicates = e.Value;
         }
@@ -242,7 +175,6 @@ namespace QRMeteo
 
             if (splitedStrings.Length > 4)
             {
-                
                 inventoryScanResult.TargetHttpPosString = splitedStrings[0];
                 inventoryScanResult.PosInDBList = splitedStrings[1];
                 inventoryScanResult.Name = splitedStrings[2];
@@ -299,7 +231,6 @@ namespace QRMeteo
                 ScanResultEntry.FormattedText = text;
             }
         }
-
 
         private void PrintReqData()
         {

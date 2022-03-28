@@ -21,11 +21,11 @@
         <Frame BackgroundColor="DimGray"  Padding="5" CornerRadius="0" >
         </Frame>
         <Button
-                x:Name="Settings"
+                x:Name="FileLoader"
                 Text="Выбрать"
                 Style="{StaticResource buttonStlyle}"
                 HorizontalOptions="Center"
-                Clicked="Settings_Clicked">
+                Clicked="FileLoaderButtonClicked">
         </Button>
 
         <Button
@@ -33,7 +33,7 @@
                  Text="Локальная база"
                  Style="{StaticResource buttonStlyle}"  
                  HorizontalOptions="Center"
-                 Clicked="DBBtn_Clicked">
+                 Clicked="DataBaseButtonClicked">
         </Button>
 
         <Button
@@ -41,14 +41,14 @@
                 Text="Excel файл"
                 Style="{StaticResource buttonStlyle}"
                 HorizontalOptions="Center"
-                Clicked="ExcelDB_Clicked">
+                Clicked="ExcelButtonClicked">
         </Button>
 
         <Entry x:Name="ScanLocationdEntry"  Placeholder = "Комментарии" TextColor="White"/>
         
         <StackLayout Orientation="Horizontal">
             <Label x:Name="DuplicateEntry" Text="Сохранять дубликаты:" Margin="10" TextColor="White" />
-            <Switch IsToggled="true" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" Toggled= "Duplicate_Toggled"/>
+            <Switch IsToggled="true" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" Toggled= "DuplicateToggled"/>
         </StackLayout>
         
         <Label x:Name="ScanResultEntry" Text="Результат сканирования" Margin="10" TextColor="White" />
@@ -58,7 +58,7 @@
                     Source="ScanIcon92.png"
                     HorizontalOptions="Center"
                     VerticalOptions="EndAndExpand"
-                    Clicked="FastScanBtn_Clicked"
+                    Clicked="StartScanButtonClicked"
                     Margin="10"
                     BackgroundColor="Transparent">
 

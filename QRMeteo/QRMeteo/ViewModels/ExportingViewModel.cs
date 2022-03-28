@@ -1,6 +1,5 @@
 ﻿
 using QRMeteo.DBExcel;
-using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,6 +12,9 @@ namespace QRMeteo.ViewModels
 {
     public class ExportingViewModel
     {
+        /// <summary>
+        /// Записывать дубликаты в БД?
+        /// </summary>
         public bool WriteDuplicates { set; get; } = true;
 
         public ICommand ExportToExcelCommand { private set; get; }
@@ -23,15 +25,13 @@ namespace QRMeteo.ViewModels
         public ObservableCollection<InventoryObject> Inventory;
 
         private string fileName;//строка названия фаила
-        private string filePath;//гле находится база
+        private string filePath;//где находится база
 
         public delegate void InsertDataHandler(string message);
-        public event InsertDataHandler DuplicateNotify;
+        public event InsertDataHandler DuplicateNotify; //оповещение о найденном дубликате
 
         private const string INDEX_FORMULA = "Для поиска индекса в счетах: =ИНДЕКС('21'!A:A;ПОИСКПОЗ(A2;'21'!B:B;0))";
         private const string NAME_FORMULA = "Для поиска названия в счетах: =ВПР(A2;'21'!B:B;1;0)";
-
-
 
         public ExportingViewModel()
         {
@@ -44,10 +44,8 @@ namespace QRMeteo.ViewModels
 
             excelService = new ExcelServises();
 
-            fileName = "InventoryDB.xlsx";//{Guid.NewGuid()}
+            fileName = "InventoryDB.xlsx";
             filePath = Path.Combine(excelService.AppFolder, fileName);
-
-            //GenerateNewFile();
         }
 
         //добавляем один объект из сканирования
@@ -65,6 +63,10 @@ namespace QRMeteo.ViewModels
             {
                 Inventory.Add(inv);//добавляем в viewList
                 App.Database.SaveItem(inv); //сохраняем в локальную базу
+            }
+            else
+            {
+                //увеличиваем на 1 позицию
             }
         }
 
@@ -85,6 +87,9 @@ namespace QRMeteo.ViewModels
             App.Database.ClearDataBase();
         }
 
+        /// <summary>
+        /// Создаем новый файл таблицы и заполняем заголовки или очищаем уже созданный
+        /// </summary>
         private void GenerateNewFile()
         {
         
@@ -97,17 +102,17 @@ namespace QRMeteo.ViewModels
                 filePath = excelService.GenerateExcel(fileName);
                 SetHeaders();
             }
-
         }
 
-        private  void SetHeaders()
+        private  void SetHeaders() //заголовки таблицы
         {
             excelService.ClearCells(filePath, "Inventory");
  
 
             var data = new ExcelStruct
             {
-                Header = new List<string>() { "Название", "Инвентарный номер", "Местонахождение", "Количество", "Номер в ведомости", "Название ", "Инв Номер",
+                Header = new List<string>() { "Название", "Инвентарный номер", "Местонахождение", "Количество",
+                    "Номер в ведомости", "Название ", "Инв Номер",
                                                    INDEX_FORMULA, NAME_FORMULA }
             };
 
@@ -115,11 +120,13 @@ namespace QRMeteo.ViewModels
 
         }
 
+        /// <summary>
+        /// Загрузка фаила с флешки или внутреннего хранилища и сохранение его в локальном хранилище
+        /// </summary>
         public void ImportFIle(string filename)
         {
             if (File.Exists(filePath))
             {
-              
                 File.Delete(filePath);
             }
             File.Copy(filename, excelService.AppFolder);
@@ -133,6 +140,9 @@ namespace QRMeteo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Сохранение всех найденных объектов из локальной базы в таблицу
+        /// </summary>
         public void ExportToExcel()
         {
             var data = new ExcelStruct();

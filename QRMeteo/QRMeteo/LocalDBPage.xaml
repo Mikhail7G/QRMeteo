@@ -51,7 +51,7 @@
                  Text="Назад"
                  Style="{StaticResource buttonStlyle}"
                  HorizontalOptions="Center"
-                 Clicked="BackBtn_Clicked"
+                 Clicked="BackBUttonClicked"
                  WidthRequest="130"
                  HeightRequest="55">
                 </Button>
@@ -60,7 +60,7 @@
                  Text="Удалить файл!"
                  Style="{StaticResource buttonStlyle}"
                  HorizontalOptions="Center"
-                 Clicked="DeleteExelBtn_Clicked"
+                 Clicked="DeleteExelFileButtonClicked"
                  WidthRequest="130">
                 </Button>
             </StackLayout>
@@ -71,7 +71,7 @@
                  Style="{StaticResource buttonStlyle}"
                  Command="{Binding ExportToExcelCommand}"
                  HorizontalOptions="Center"
-                 Clicked="WriteToExelBtn_Clicked"
+                 Clicked="WriteToExelButtonClicked"
                  WidthRequest="130">
                 </Button>
   

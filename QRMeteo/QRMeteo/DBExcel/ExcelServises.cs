@@ -5,8 +5,6 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-
-
 namespace QRMeteo.DBExcel
 {
     //Рбота с таблицами в формате xlsx
@@ -17,7 +15,7 @@ namespace QRMeteo.DBExcel
 
         public string FilePath { set; get; }//полная ссылка на путь до файла
 
-        //генератор ячеек, что в ней хранить и в каом формате
+        //генератор ячеек, что в ней хранить и в каком формате
         private Cell ConstructCell(string value, CellValues dataTypes) =>
                new Cell()
                {
@@ -28,7 +26,6 @@ namespace QRMeteo.DBExcel
         public string GenerateExcel(String fileName)//создается файлик с листом
         {
             Environment.SetEnvironmentVariable("MONO_URI_DOTNETRELATIVEORABSOLUTE", "true");
-
 
             FilePath = Path.Combine(AppFolder, fileName);
             var document = SpreadsheetDocument.Create(Path.Combine(AppFolder, fileName), SpreadsheetDocumentType.Workbook);

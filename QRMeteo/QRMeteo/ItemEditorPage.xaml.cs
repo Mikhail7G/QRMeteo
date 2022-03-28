@@ -1,10 +1,5 @@
 ﻿using QRMeteo.DBExcel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -14,22 +9,25 @@ namespace QRMeteo
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ItemEditorPage : ContentPage
     {
-        private InventoryObject SelectedObject;//Выбранный объект
+        private InventoryObject selectedObject;//Выбранный объект
         public ItemEditorPage()
         {
             InitializeComponent();
             SetTapper();
-            SelectedObject = new InventoryObject();
 
+            selectedObject = new InventoryObject();
         }
 
+        /// <summary>
+        /// Отображение в окне информацию о выбранном объекте путем привязки к компонентам
+        /// </summary>
         public void SetItemObject(InventoryObject obj)
         {
             if (obj != null) 
             {
-                SelectedObject = obj;
-                StepperInv.Value = Convert.ToDouble(SelectedObject.Quantity);
-                this.BindingContext = SelectedObject;//привязывем объект к контенту страницы
+                selectedObject = obj;
+                StepperInv.Value = Convert.ToDouble(selectedObject.Quantity);
+                this.BindingContext = selectedObject;//привязывем объект к контенту страницы
             }
         }
 
@@ -47,9 +45,12 @@ namespace QRMeteo
             ObjectLinkLbl.GestureRecognizers.Add(Tapper);
         }
 
+        /// <summary>
+        /// Открываем ссылку на бд в гугл таблице
+        /// </summary>
         private async void OpenURL()
         {
-            string uri = SelectedObject.TargetHttpPosString;
+            string uri = selectedObject.TargetHttpPosString;
             try
             {
                 if (uri.Length > 0)
@@ -67,8 +68,8 @@ namespace QRMeteo
         {
             try
             {
-                if (SelectedObject != null)
-                    App.Database.SaveItem(SelectedObject);
+                if (selectedObject != null)
+                    App.Database.SaveItem(selectedObject);
             }
             catch(Exception ex)
             {
@@ -76,22 +77,7 @@ namespace QRMeteo
             }
         }
 
-        private void NameEtryTextChanged(object sender, TextChangedEventArgs e)
-        {
-            UpdateItem();
-        }
-
-        private void InventoryEntryChanged(object sender, TextChangedEventArgs e)
-        {
-            UpdateItem();
-        }
-
-        private void LocationEntryChanged(object sender, TextChangedEventArgs e)
-        {
-            UpdateItem();
-        }
-
-        private void QuantityEntryChanged(object sender, TextChangedEventArgs e)
+        private void TextEntryChanged(object sender, TextChangedEventArgs e)
         {
             UpdateItem();
         }

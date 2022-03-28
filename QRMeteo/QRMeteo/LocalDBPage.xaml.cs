@@ -13,7 +13,6 @@ namespace QRMeteo
         public LocalDBPage()
         {
             InitializeComponent();
-
         }
 
         public void SetViewModel(ExportingViewModel model)
@@ -32,54 +31,9 @@ namespace QRMeteo
         {
             base.OnAppearing();
             inventoryList.BeginRefresh();
-
         }
 
-        [Obsolete]
-        public void SetDataToView()
-        {
-            Label header = new Label
-            {
-                Text = "Локальная база",
-                FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
-                HorizontalOptions = LayoutOptions.Center
-            };
-
-        ListView listView = new ListView
-            {
-            HasUnevenRows = true,
-            // Определяем источник данных
-            ItemsSource = Model.Inventory,
-
-            // Определяем формат отображения данных
-            ItemTemplate = new DataTemplate(() =>
-            {
-
-                    Label titleLabel = new Label { FontSize = 18 };
-                titleLabel.SetBinding(Label.TextProperty, "Name");
-
-                    Label companyLabel = new Label();
-                companyLabel.SetBinding(Label.TextProperty, "InventoryNumber");
-
-                    Label priceLabel = new Label();
-                priceLabel.SetBinding(Label.TextProperty, "LocationItem");
-
-                    // создаем объект ViewCell.
-                    return new ViewCell
-                {
-                    View = new StackLayout
-                    {
-                        Padding = new Thickness(0, 5),
-                        Orientation = StackOrientation.Vertical,
-                        Children = { titleLabel, companyLabel, priceLabel }
-                    }
-                };
-            })
-        };
-            this.Content = new StackLayout { Children = { header, listView } };
-        }
-
-        private async void BackBtn_Clicked(object sender, EventArgs e)
+        private async void BackBUttonClicked(object sender, EventArgs e)
         {
             await Navigation.PopAsync();
         }
@@ -93,12 +47,12 @@ namespace QRMeteo
             }
         }
 
-        private void WriteToExelBtn_Clicked(object sender, EventArgs e)
+        private void WriteToExelButtonClicked(object sender, EventArgs e)
         {
             SetTextResultLabel("Запись в файл");
         }
 
-        private async void DeleteExelBtn_Clicked(object sender, EventArgs e)
+        private async void DeleteExelFileButtonClicked(object sender, EventArgs e)
         {
             bool result = await DisplayAlert("Подтвердить действие", "Вы хотите удалить фаил EXEL?", "Да", "Нет");
             if (result)
@@ -108,6 +62,9 @@ namespace QRMeteo
             }
         }
 
+        /// <summary>
+        /// Открывает новое окно с детальным описанием выбранного объекта
+        /// </summary>
         public async void OnItemTappedAsync(object sender, ItemTappedEventArgs e)
         {
             InventoryObject invObj = e.Item as InventoryObject;
@@ -118,7 +75,6 @@ namespace QRMeteo
                 page.SetItemObject(invObj);
 
                 ((ListView)sender).SelectedItem = null;// очищаем выделение из листа
-
             }
             catch (Exception ex)
             {

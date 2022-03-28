@@ -27,17 +27,17 @@
         
         <Label x:Name="ObjectName" Text="Название:" Margin="1" TextColor="Aquamarine" VerticalOptions="Center" HorizontalOptions="Center" />
         <!--<Entry x:Name="ObjectNameEnt" Text="{Binding Name}" TextColor="White" />-->
-        <Editor x:Name="ObjectNameEnt" Text="{Binding Name}" HeightRequest="100" TextColor="White" TextChanged="NameEtryTextChanged"/>
+        <Editor x:Name="ObjectNameEnt" Text="{Binding Name}" HeightRequest="100" TextColor="White" TextChanged="TextEntryChanged"/>
         <Frame BackgroundColor="DimGray"  Padding="5" CornerRadius="0" >
         </Frame>
 
         <Label x:Name="ObjectInventory" Text="Инв номер:" Margin="1" TextColor="Aquamarine" VerticalOptions="Center" HorizontalOptions="Center" />
-        <Entry x:Name="ObjectInventoryEnt" Text="{Binding InventoryNumber}" TextColor="White" Keyboard="Numeric" TextChanged="InventoryEntryChanged" />
+        <Entry x:Name="ObjectInventoryEnt" Text="{Binding InventoryNumber}" TextColor="White" Keyboard="Numeric" TextChanged="TextEntryChanged" />
         <Frame BackgroundColor="DimGray"  Padding="5" CornerRadius="0" >
         </Frame>
 
         <Label x:Name="ObjectLocation" Text="Нахождение:" Margin="1" TextColor="Aquamarine" VerticalOptions="Center" HorizontalOptions="Center" />
-        <Entry x:Name="ObjectLicationEnt" Text="{Binding LocationItem}" TextColor="White" TextChanged="LocationEntryChanged" />
+        <Entry x:Name="ObjectLicationEnt" Text="{Binding LocationItem}" TextColor="White" TextChanged="TextEntryChanged" />
         <Frame BackgroundColor="DimGray"  Padding="5" CornerRadius="0" >
         </Frame>
 
@@ -45,7 +45,7 @@
         <StackLayout
              BackgroundColor="Gray"
              Orientation="Horizontal">
-            <Entry x:Name="ObjectQuantityEnt" Text="{Binding Quantity}" TextColor="White" Keyboard="Numeric" TextChanged="QuantityEntryChanged"
+            <Entry x:Name="ObjectQuantityEnt" Text="{Binding Quantity}" TextColor="White" Keyboard="Numeric" TextChanged="TextEntryChanged"
                    HorizontalOptions="FillAndExpand" />
              <Stepper x:Name="StepperInv" Minimum="1" Increment="1" ValueChanged="StepperChanged" />
         </StackLayout>
